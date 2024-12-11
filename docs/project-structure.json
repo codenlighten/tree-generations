@@ -1,0 +1,132 @@
+{
+  "metadata": {
+    "generatedAt": "2024-12-11T18:23:44.939Z",
+    "repository": {
+      "repository": {
+        "name": "tree-generations",
+        "owner": "codenlighten",
+        "branch": "main",
+        "description": null,
+        "stars": 0,
+        "forks": 0,
+        "url": "https://github.com/codenlighten/tree-generations"
+      },
+      "tree": {
+        "name": "root",
+        "type": "directory",
+        "children": [
+          {
+            "name": "docs",
+            "type": "directory",
+            "children": [
+              {
+                "name": "directory-structure-2024-12-11.md",
+                "type": "file",
+                "metadata": {
+                  "size": 471,
+                  "sha": "f8ef024eea4b96964a16cf9d03526db9bdba43b4",
+                  "mode": "100644"
+                }
+              }
+            ],
+            "metadata": {
+              "sha": "d67de9debd209c22df4283759c10cdb430053e75",
+              "mode": "040000"
+            }
+          },
+          {
+            "name": "directory-tree-generator.js",
+            "type": "file",
+            "metadata": {
+              "size": 2870,
+              "sha": "1ebcc37a7f8b09dbce0804f0cc9d73a5dc7ae121",
+              "mode": "100644"
+            }
+          },
+          {
+            "name": "github-tree-generator.js",
+            "type": "file",
+            "metadata": {
+              "size": 5119,
+              "sha": "a742e567e0c785364e7041bffc62f289f67500ba",
+              "mode": "100644"
+            }
+          },
+          {
+            "name": "package.json",
+            "type": "file",
+            "metadata": {
+              "size": 221,
+              "sha": "315443ffdff2c004a61bbf1ed5e16164894d656a",
+              "mode": "100644"
+            }
+          },
+          {
+            "name": "README.md",
+            "type": "file",
+            "metadata": {
+              "size": 19,
+              "sha": "aec147d380415730d19058af33bd0899d71ee257",
+              "mode": "100644"
+            }
+          },
+          {
+            "name": "tree-generator.js",
+            "type": "file",
+            "metadata": {
+              "size": 1692,
+              "sha": "c6f248e60975046a25898250e7ddc2bfa28f1ef4",
+              "mode": "100644"
+            }
+          }
+        ],
+        "metadata": {}
+      }
+    },
+    "lastUpdated": "2024-12-11T18:23:44.939Z"
+  },
+  "projectStructure": {
+    "overview": {
+      "sourceFiles": [
+        {
+          "name": "directory-tree-generator.js",
+          "path": "root/directory-tree-generator.js",
+          "size": "3 KB",
+          "lastModified": "N/A"
+        },
+        {
+          "name": "github-tree-generator.js",
+          "path": "root/github-tree-generator.js",
+          "size": "5 KB",
+          "lastModified": "N/A"
+        },
+        {
+          "name": "tree-generator.js",
+          "path": "root/tree-generator.js",
+          "size": "2 KB",
+          "lastModified": "N/A"
+        }
+      ],
+      "testFiles": [],
+      "configFiles": [
+        {
+          "name": "package.json",
+          "path": "root/package.json",
+          "size": "221 Bytes",
+          "lastModified": "N/A"
+        }
+      ],
+      "components": [],
+      "utilities": [],
+      "services": [],
+      "models": [],
+      "routes": []
+    },
+    "dataFlow": {
+      "entryPoints": [],
+      "services": [],
+      "dataModels": [],
+      "utilities": []
+    }
+  }
+}

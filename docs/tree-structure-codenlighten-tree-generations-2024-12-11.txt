@@ -1,0 +1,7 @@
+├── .gitignore
+├── README.md
+├── directory-tree-generator.js
+├── docs
+│   └── directory-structure-2024-12-11.md
+├── github-tree-generator.js
+└── tree-generator.js
