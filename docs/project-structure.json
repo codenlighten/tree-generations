@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2024-12-11T18:23:44.939Z",
+    "generatedAt": "2024-12-12T11:41:05.643Z",
     "repository": {
       "repository": {
         "name": "tree-generations",
@@ -20,35 +20,53 @@
             "type": "directory",
             "children": [
               {
-                "name": "directory-structure-2024-12-11.md",
+                "name": "project-structure.json",
                 "type": "file",
                 "metadata": {
-                  "size": 471,
-                  "sha": "f8ef024eea4b96964a16cf9d03526db9bdba43b4",
+                  "size": 3439,
+                  "sha": "bd6043d28d859fcecf466514d68db349bc553680",
+                  "mode": "100644"
+                }
+              },
+              {
+                "name": "project-structure.md",
+                "type": "file",
+                "metadata": {
+                  "size": 436,
+                  "sha": "76b47d9620b9e80e43ccb1f7a34aae0f2d8dedef",
+                  "mode": "100644"
+                }
+              },
+              {
+                "name": "repository-structure-codenlighten-tree-generations-2024-12-11.md",
+                "type": "file",
+                "metadata": {
+                  "size": 1346,
+                  "sha": "1c7e7a566cd75342e1559a0a3d7e8def830cfe89",
+                  "mode": "100644"
+                }
+              },
+              {
+                "name": "tree-structure-codenlighten-tree-generations-2024-12-11.txt",
+                "type": "file",
+                "metadata": {
+                  "size": 207,
+                  "sha": "807490736fbbf7fc50a69de179a7b858d8f96c18",
                   "mode": "100644"
                 }
               }
             ],
             "metadata": {
-              "sha": "d67de9debd209c22df4283759c10cdb430053e75",
+              "sha": "5920cd05509eb358a80e4d28e9fa59f4e60d5f65",
               "mode": "040000"
             }
           },
           {
-            "name": "directory-tree-generator.js",
+            "name": "JsonTreeGenerator.js",
             "type": "file",
             "metadata": {
-              "size": 2870,
-              "sha": "1ebcc37a7f8b09dbce0804f0cc9d73a5dc7ae121",
-              "mode": "100644"
-            }
-          },
-          {
-            "name": "github-tree-generator.js",
-            "type": "file",
-            "metadata": {
-              "size": 5119,
-              "sha": "a742e567e0c785364e7041bffc62f289f67500ba",
+              "size": 18996,
+              "sha": "61842673a3a8045ddc32d7152b09629942513975",
               "mode": "100644"
             }
           },
@@ -71,11 +89,11 @@
             }
           },
           {
-            "name": "tree-generator.js",
+            "name": "TreeGenerator.js",
             "type": "file",
             "metadata": {
-              "size": 1692,
-              "sha": "c6f248e60975046a25898250e7ddc2bfa28f1ef4",
+              "size": 10126,
+              "sha": "a7f3985c42d85fc9b4cd4e5023e2a63626b0e36c",
               "mode": "100644"
             }
           }
@@ -83,32 +101,32 @@
         "metadata": {}
       }
     },
-    "lastUpdated": "2024-12-11T18:23:44.939Z"
+    "lastUpdated": "2024-12-12T11:41:05.643Z"
   },
   "projectStructure": {
     "overview": {
       "sourceFiles": [
         {
-          "name": "directory-tree-generator.js",
-          "path": "root/directory-tree-generator.js",
-          "size": "3 KB",
+          "name": "JsonTreeGenerator.js",
+          "path": "root/JsonTreeGenerator.js",
+          "size": "19 KB",
           "lastModified": "N/A"
         },
         {
-          "name": "github-tree-generator.js",
-          "path": "root/github-tree-generator.js",
-          "size": "5 KB",
-          "lastModified": "N/A"
-        },
-        {
-          "name": "tree-generator.js",
-          "path": "root/tree-generator.js",
-          "size": "2 KB",
+          "name": "TreeGenerator.js",
+          "path": "root/TreeGenerator.js",
+          "size": "10 KB",
           "lastModified": "N/A"
         }
       ],
       "testFiles": [],
       "configFiles": [
+        {
+          "name": "project-structure.json",
+          "path": "root/docs/project-structure.json",
+          "size": "3 KB",
+          "lastModified": "N/A"
+        },
         {
           "name": "package.json",
           "path": "root/package.json",

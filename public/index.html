@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tree Generator</title>
+    <!-- Add prism.js CSS -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      /* Previous styles remain the same... */
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+
+      .container {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        color: #2c3e50;
+        text-align: center;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+        color: #34495e;
+        font-weight: 500;
+      }
+
+      input[type="text"],
+      input[type="url"],
+      select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+      }
+
+      button {
+        background-color: #3498db;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s;
+      }
+
+      button:hover {
+        background-color: #2980b9;
+      }
+
+      .output {
+        margin-top: 20px;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 4px;
+        border: 1px solid #dee2e6;
+        overflow-x: auto;
+      }
+
+      .error {
+        color: #dc3545;
+        padding: 10px;
+        border-radius: 4px;
+        margin-top: 10px;
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+      }
+
+      .tabs {
+        display: flex;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #dee2e6;
+      }
+
+      .tab {
+        padding: 10px 20px;
+        cursor: pointer;
+        background: none;
+        border: none;
+        color: #6c757d;
+      }
+
+      .tab.active {
+        color: #3498db;
+        border-bottom: 2px solid #3498db;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 20px;
+        color: #6c757d;
+      }
+
+      pre {
+        margin: 0;
+        white-space: pre-wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Tree Generator</h1>
+
+      <div class="tabs">
+        <button class="tab active" data-tab="github">GitHub Repository</button>
+        <button class="tab" data-tab="filesystem">Filesystem</button>
+      </div>
+
+      <div id="github-form">
+        <div class="form-group">
+          <label for="repo-url">GitHub Repository URL</label>
+          <input
+            type="url"
+            id="repo-url"
+            placeholder="https://github.com/username/repo"
+          />
+        </div>
+      </div>
+
+      <div id="filesystem-form" style="display: none">
+        <div class="form-group">
+          <label for="fs-path">Filesystem Path</label>
+          <input type="text" id="fs-path" placeholder="/path/to/directory" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="format">Output Format</label>
+        <select id="format">
+          <option value="json">JSON</option>
+          <option value="ascii">ASCII Tree</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="generate-docs" />
+          Generate Documentation
+        </label>
+      </div>
+
+      <button onclick="generateTree()">Generate Tree</button>
+
+      <div id="error" class="error" style="display: none"></div>
+      <div id="loading" class="loading" style="display: none">
+        Generating tree...
+      </div>
+      <div id="output" class="output" style="display: none"></div>
+    </div>
+
+    <!-- Add prism.js and its components -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script>
+      // Tab switching
+      document.querySelectorAll(".tab").forEach((tab) => {
+        tab.addEventListener("click", () => {
+          document
+            .querySelectorAll(".tab")
+            .forEach((t) => t.classList.remove("active"));
+          tab.classList.add("active");
+
+          if (tab.dataset.tab === "github") {
+            document.getElementById("github-form").style.display = "block";
+            document.getElementById("filesystem-form").style.display = "none";
+          } else {
+            document.getElementById("github-form").style.display = "none";
+            document.getElementById("filesystem-form").style.display = "block";
+          }
+        });
+      });
+
+      // Function to safely highlight code with Prism
+      function highlightCode(outputElement) {
+        if (window.Prism) {
+          Prism.highlightAllUnder(outputElement);
+        }
+      }
+
+      async function generateTree() {
+        const output = document.getElementById("output");
+        const error = document.getElementById("error");
+        const loading = document.getElementById("loading");
+        const activeTab = document.querySelector(".tab.active").dataset.tab;
+
+        error.style.display = "none";
+        output.style.display = "none";
+        loading.style.display = "block";
+
+        try {
+          const format = document.getElementById("format").value;
+          const generateDocs = document.getElementById("generate-docs").checked;
+
+          let endpoint;
+          let payload;
+
+          if (activeTab === "github") {
+            const repoUrl = document.getElementById("repo-url").value;
+            if (!repoUrl)
+              throw new Error("Please enter a GitHub repository URL");
+
+            endpoint = "/api/github/tree";
+            payload = { repoUrl, format, options: { generateDocs } };
+          } else {
+            const path = document.getElementById("fs-path").value;
+            if (!path) throw new Error("Please enter a filesystem path");
+
+            endpoint = "/api/filesystem/tree";
+            payload = { path, format };
+          }
+
+          const response = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+
+          const result = await response.json();
+
+          if (result.error) {
+            throw new Error(result.error);
+          }
+
+          const formattedJson = JSON.stringify(result.data, null, 2);
+          output.innerHTML = `<pre><code class="language-json">${formattedJson
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;")}</code></pre>`;
+
+          // Highlight code after setting content
+          highlightCode(output);
+          output.style.display = "block";
+        } catch (err) {
+          error.textContent = err.message;
+          error.style.display = "block";
+        } finally {
+          loading.style.display = "none";
+        }
+      }
+    </script>
+  </body>
+</html>
