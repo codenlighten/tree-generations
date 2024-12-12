@@ -143,8 +143,33 @@
 
       <div id="filesystem-form" style="display: none">
         <div class="form-group">
-          <label for="fs-path">Filesystem Path</label>
-          <input type="text" id="fs-path" placeholder="/path/to/directory" />
+          <label for="fs-path">Choose Directory</label>
+          <div style="display: flex; gap: 10px; align-items: center">
+            <input
+              type="text"
+              id="fs-path"
+              placeholder="/path/to/directory"
+              readonly
+              style="flex: 1"
+            />
+            <input
+              type="file"
+              id="folder-picker"
+              webkitdirectory
+              directory
+              style="display: none"
+            />
+            <button
+              onclick="document.getElementById('folder-picker').click()"
+              style="white-space: nowrap; padding: 8px 12px"
+            >
+              Browse...
+            </button>
+          </div>
+          <small style="color: #666; margin-top: 5px; display: block">
+            Note: For security reasons, you can only select folders you have
+            permission to access.
+          </small>
         </div>
       </div>
 
@@ -176,7 +201,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
     <script>
-      // Tab switching
+      // Initialize folder picker
+      document
+        .getElementById("folder-picker")
+        .addEventListener("change", function (e) {
+          if (e.target.files.length > 0) {
+            // Get the path of the selected directory
+            const folderPath =
+              e.target.files[0].webkitRelativePath.split("/")[0];
+            document.getElementById("fs-path").value = folderPath;
+          }
+        });
+
+      // Tab switching with folder picker reset
       document.querySelectorAll(".tab").forEach((tab) => {
         tab.addEventListener("click", () => {
           document
@@ -191,6 +228,10 @@
             document.getElementById("github-form").style.display = "none";
             document.getElementById("filesystem-form").style.display = "block";
           }
+
+          // Reset folder picker when switching tabs
+          document.getElementById("folder-picker").value = "";
+          document.getElementById("fs-path").value = "";
         });
       });
 
@@ -227,7 +268,7 @@
             payload = { repoUrl, format, options: { generateDocs } };
           } else {
             const path = document.getElementById("fs-path").value;
-            if (!path) throw new Error("Please enter a filesystem path");
+            if (!path) throw new Error("Please select a directory");
 
             endpoint = "/api/filesystem/tree";
             payload = { path, format };
@@ -253,7 +294,6 @@
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;")}</code></pre>`;
 
-          // Highlight code after setting content
           highlightCode(output);
           output.style.display = "block";
         } catch (err) {

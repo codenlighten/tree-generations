@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2024-12-12T11:41:05.643Z",
+    "generatedAt": "2024-12-12T11:45:42.886Z",
     "repository": {
       "repository": {
         "name": "tree-generations",
@@ -23,8 +23,8 @@
                 "name": "project-structure.json",
                 "type": "file",
                 "metadata": {
-                  "size": 3439,
-                  "sha": "bd6043d28d859fcecf466514d68db349bc553680",
+                  "size": 4117,
+                  "sha": "f05ff3a1a9f6ed5ea2ed6d9cd91ecb44640d854c",
                   "mode": "100644"
                 }
               },
@@ -33,7 +33,7 @@
                 "type": "file",
                 "metadata": {
                   "size": 436,
-                  "sha": "76b47d9620b9e80e43ccb1f7a34aae0f2d8dedef",
+                  "sha": "351fd0335c45e765205fbaafd76ea3283cdf8686",
                   "mode": "100644"
                 }
               },
@@ -57,8 +57,36 @@
               }
             ],
             "metadata": {
-              "sha": "5920cd05509eb358a80e4d28e9fa59f4e60d5f65",
+              "sha": "c029d09d685437bacb1eb52e5e7fea96f13daa00",
               "mode": "040000"
+            }
+          },
+          {
+            "name": "public",
+            "type": "directory",
+            "children": [
+              {
+                "name": "index.html",
+                "type": "file",
+                "metadata": {
+                  "size": 7560,
+                  "sha": "86ee7b525fd088546868d1fa1a45abb154293598",
+                  "mode": "100644"
+                }
+              }
+            ],
+            "metadata": {
+              "sha": "28f6d3e0cd6d0b143c283264522b7ce8ede56321",
+              "mode": "040000"
+            }
+          },
+          {
+            "name": "index.js",
+            "type": "file",
+            "metadata": {
+              "size": 8220,
+              "sha": "482c8833b447551e1856ae86ac88fc44acfa0946",
+              "mode": "100644"
             }
           },
           {
@@ -83,8 +111,8 @@
             "name": "README.md",
             "type": "file",
             "metadata": {
-              "size": 19,
-              "sha": "aec147d380415730d19058af33bd0899d71ee257",
+              "size": 36,
+              "sha": "62a6e20430159d2f3ada576886c0b8eee21fa080",
               "mode": "100644"
             }
           },
@@ -101,11 +129,17 @@
         "metadata": {}
       }
     },
-    "lastUpdated": "2024-12-12T11:41:05.643Z"
+    "lastUpdated": "2024-12-12T11:45:42.886Z"
   },
   "projectStructure": {
     "overview": {
       "sourceFiles": [
+        {
+          "name": "index.js",
+          "path": "root/index.js",
+          "size": "8 KB",
+          "lastModified": "N/A"
+        },
         {
           "name": "JsonTreeGenerator.js",
           "path": "root/JsonTreeGenerator.js",
@@ -124,7 +158,7 @@
         {
           "name": "project-structure.json",
           "path": "root/docs/project-structure.json",
-          "size": "3 KB",
+          "size": "4 KB",
           "lastModified": "N/A"
         },
         {
@@ -141,7 +175,12 @@
       "routes": []
     },
     "dataFlow": {
-      "entryPoints": [],
+      "entryPoints": [
+        {
+          "name": "index.js",
+          "path": "root/index.js"
+        }
+      ],
       "services": [],
       "dataModels": [],
       "utilities": []

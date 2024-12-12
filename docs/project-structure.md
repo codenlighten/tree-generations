@@ -1,5 +1,5 @@
 # Project Structure Documentation
-Generated on: 12/12/2024, 6:41:05 AM
+Generated on: 12/12/2024, 6:45:42 AM
 
 ## Repository Information
 - Name: tree-generations
@@ -9,7 +9,7 @@ Generated on: 12/12/2024, 6:41:05 AM
 ## Project Overview
 
 ### Entry Points
-
+- `root/index.js`
 
 ### Services
 
@@ -26,7 +26,7 @@ Generated on: 12/12/2024, 6:41:05 AM
 ## Data Flow Diagram
 ```mermaid
 flowchart TD
-  
+  Entry[index.js]
   
   
   
