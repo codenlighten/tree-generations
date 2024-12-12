@@ -119,6 +119,34 @@
         margin: 0;
         white-space: pre-wrap;
       }
+      .download-buttons {
+        margin-top: 20px;
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+      }
+
+      .download-button {
+        background-color: #27ae60;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .download-button:hover {
+        background-color: #219a52;
+      }
+
+      .download-button svg {
+        width: 16px;
+        height: 16px;
+      }
     </style>
   </head>
   <body>
@@ -195,6 +223,40 @@
         Generating tree...
       </div>
       <div id="output" class="output" style="display: none"></div>
+      <div id="download-section" class="download-buttons" style="display: none">
+        <button onclick="downloadFile('markdown')" class="download-button">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Download MD
+        </button>
+        <button onclick="downloadFile('json')" class="download-button">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Download JSON
+        </button>
+      </div>
     </div>
 
     <!-- Add prism.js and its components -->
@@ -242,43 +304,23 @@
         }
       }
 
+      let currentFiles = {};
+
+      // Modify your generateTree function to store file information
       async function generateTree() {
         const output = document.getElementById("output");
         const error = document.getElementById("error");
         const loading = document.getElementById("loading");
+        const downloadSection = document.getElementById("download-section");
         const activeTab = document.querySelector(".tab.active").dataset.tab;
 
         error.style.display = "none";
         output.style.display = "none";
+        downloadSection.style.display = "none";
         loading.style.display = "block";
 
         try {
-          const format = document.getElementById("format").value;
-          const generateDocs = document.getElementById("generate-docs").checked;
-
-          let endpoint;
-          let payload;
-
-          if (activeTab === "github") {
-            const repoUrl = document.getElementById("repo-url").value;
-            if (!repoUrl)
-              throw new Error("Please enter a GitHub repository URL");
-
-            endpoint = "/api/github/tree";
-            payload = { repoUrl, format, options: { generateDocs } };
-          } else {
-            const path = document.getElementById("fs-path").value;
-            if (!path) throw new Error("Please select a directory");
-
-            endpoint = "/api/filesystem/tree";
-            payload = { path, format };
-          }
-
-          const response = await fetch(endpoint, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          });
+          // ... (existing code remains the same until the result processing)
 
           const result = await response.json();
 
@@ -286,21 +328,53 @@
             throw new Error(result.error);
           }
 
-          const formattedJson = JSON.stringify(result.data, null, 2);
-          output.innerHTML = `<pre><code class="language-json">${formattedJson
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;")}</code></pre>`;
+          // Store file information
+          currentFiles = result.files || {};
 
-          highlightCode(output);
-          output.style.display = "block";
+          // Show download buttons if files are available
+          if (Object.keys(currentFiles).length > 0) {
+            downloadSection.style.display = "flex";
+          }
+
+          // ... (rest of the existing code)
         } catch (err) {
           error.textContent = err.message;
           error.style.display = "block";
         } finally {
           loading.style.display = "none";
+        }
+      }
+
+      async function downloadFile(type) {
+        try {
+          if (!currentFiles[type]) {
+            throw new Error(`No ${type} file available for download`);
+          }
+
+          const filename = currentFiles[type];
+          const response = await fetch(`/api/download/${filename}`);
+
+          if (!response.ok) {
+            throw new Error("Failed to download file");
+          }
+
+          // Create blob from response
+          const blob = await response.blob();
+
+          // Create download link
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+
+          // Cleanup
+          window.URL.revokeObjectURL(url);
+          document.body.removeChild(a);
+        } catch (error) {
+          document.getElementById("error").textContent = error.message;
+          document.getElementById("error").style.display = "block";
         }
       }
     </script>

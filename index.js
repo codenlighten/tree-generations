@@ -3,6 +3,7 @@ const express = require("express");
 const path = require("path");
 const cors = require("cors");
 const fs = require("fs");
+
 // Import our tree generators
 const {
   BaseJsonTreeGenerator,
@@ -23,9 +24,14 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static(path.join(__dirname, "public")));
 
+// Ensure docs directory exists
+const docsDir = path.join(__dirname, "docs");
+if (!fs.existsSync(docsDir)) {
+  fs.mkdirSync(docsDir, { recursive: true });
+}
+
 // Helper function to generate documentation
 async function generateDevDocs(tree, repoInfo) {
-  // Documentation generation logic moved to a separate module if needed
   const timestamp = new Date().toISOString();
   const docTemplate = {
     metadata: {
@@ -102,7 +108,6 @@ async function generateDevDocs(tree, repoInfo) {
     }
   }
 
-  // Process the tree to populate the documentation
   processNode(tree);
 
   return {
@@ -111,7 +116,6 @@ async function generateDevDocs(tree, repoInfo) {
   };
 }
 
-// Helper function to generate markdown
 function generateMarkdown(docTemplate, repoInfo) {
   return `# Project Structure Documentation
 Generated on: ${new Date().toLocaleString()}
@@ -167,7 +171,6 @@ flowchart TD
 `;
 }
 
-// Helper functions
 function categorizeFile(filePath, fileName) {
   if (fileName.includes(".test.") || fileName.includes(".spec."))
     return "testFiles";
@@ -190,6 +193,35 @@ function formatSize(bytes) {
   return Math.round(bytes / Math.pow(1024, i), 2) + " " + sizes[i];
 }
 
+// Download endpoint
+app.get("/api/download/:filename", (req, res) => {
+  try {
+    const filename = req.params.filename;
+    const filePath = path.join(__dirname, "docs", filename);
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({
+        error: "File not found",
+        status: "error",
+      });
+    }
+
+    res.setHeader(
+      "Content-Type",
+      filename.endsWith(".json") ? "application/json" : "text/markdown"
+    );
+    res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+
+    const fileStream = fs.createReadStream(filePath);
+    fileStream.pipe(res);
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+      status: "error",
+    });
+  }
+});
+
 // API Routes
 app.post("/api/github/tree", async (req, res) => {
   try {
@@ -203,6 +235,7 @@ app.post("/api/github/tree", async (req, res) => {
     }
 
     let result;
+    let files = {};
 
     if (format === "json") {
       const generator = new GitHubJsonTreeGenerator(options);
@@ -211,6 +244,23 @@ app.post("/api/github/tree", async (req, res) => {
       if (options.generateDocs) {
         const devDocs = await generateDevDocs(result.tree, result);
         result.documentation = devDocs;
+
+        // Save files and store filenames
+        const timestamp = new Date().toISOString().split("T")[0];
+        const baseFilename = `${result.repository.owner}-${result.repository.name}-${timestamp}`;
+
+        // Save MD file
+        const mdPath = path.join(__dirname, "docs", `${baseFilename}.md`);
+        fs.writeFileSync(mdPath, devDocs.markdown);
+        files.markdown = `${baseFilename}.md`;
+
+        // Save JSON file
+        const jsonPath = path.join(__dirname, "docs", `${baseFilename}.json`);
+        fs.writeFileSync(
+          jsonPath,
+          JSON.stringify(devDocs.documentation, null, 2)
+        );
+        files.json = `${baseFilename}.json`;
       }
     } else {
       result = await GitHubTreeGenerator.generate(repoUrl, options);
@@ -218,6 +268,7 @@ app.post("/api/github/tree", async (req, res) => {
 
     res.json({
       data: result,
+      files,
       status: "success",
     });
   } catch (error) {
@@ -240,16 +291,46 @@ app.post("/api/filesystem/tree", async (req, res) => {
     }
 
     let result;
+    let files = {};
 
     if (format === "json") {
       const generator = new FileSystemJsonTreeGenerator(options);
       result = await generator.generateTreeData(fsPath);
+
+      if (options.generateDocs) {
+        const devDocs = await generateDevDocs(result, {
+          repository: {
+            name: path.basename(fsPath),
+            owner: "local",
+            branch: "local",
+          },
+        });
+        result.documentation = devDocs;
+
+        // Save files for filesystem trees as well
+        const timestamp = new Date().toISOString().split("T")[0];
+        const baseFilename = `local-${path.basename(fsPath)}-${timestamp}`;
+
+        // Save MD file
+        const mdPath = path.join(__dirname, "docs", `${baseFilename}.md`);
+        fs.writeFileSync(mdPath, devDocs.markdown);
+        files.markdown = `${baseFilename}.md`;
+
+        // Save JSON file
+        const jsonPath = path.join(__dirname, "docs", `${baseFilename}.json`);
+        fs.writeFileSync(
+          jsonPath,
+          JSON.stringify(devDocs.documentation, null, 2)
+        );
+        files.json = `${baseFilename}.json`;
+      }
     } else {
       result = await TreeGenerator.generate(fsPath, options);
     }
 
     res.json({
       data: result,
+      files,
       status: "success",
     });
   } catch (error) {
